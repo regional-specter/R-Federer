@@ -1,0 +1,6 @@
+wikipedia-api
+chromadb
+sentence-transformers
+tqdm
+python-dotenv
+requests
