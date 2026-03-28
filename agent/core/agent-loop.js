@@ -1,6 +1,7 @@
 // agent/core/agent-loop.js
 
-// Import necessary modules from other parts of the agent.
+const { execSync } = require('child_process');
+const path = require('path');
 const { generateResponse } = require('./llm-client');
 
 /**
@@ -17,17 +18,59 @@ async function runAgentCycle(userInput) {
   }
 
   try {
-    // 1. Generate the main response from the LLM to show to the user.
-    console.log(`Agent loop: Requesting LLM response for: "${userInput}"`);
-    const llmResponse = await generateResponse(userInput);
-    console.log(`Agent loop: Received response from LLM.`);
+    // 1. Retrieve context from ChromaDB via Python script
+    const pythonScriptPath = path.join(__dirname, '../../backend/retrieval/dpr_pipeline.py');
+    
+    let context = "No specific tennis data found for this query.";
+    try {
+        console.log(`RAG: Searching vector database for: "${userInput}"...`);
+        
+        // Execute the python script and capture JSON output
+        const cmd = `python3 "${pythonScriptPath}" "${userInput.replace(/"/g, '\\"')}" --json`;
+        const output = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] });
+        
+        const results = JSON.parse(output);
+        if (Array.isArray(results) && results.length > 0) {
+            const sources = [...new Set(results.map(r => r.metadata.title))].join(', ');
+            console.log(`RAG: Found ${results.length} relevant chunks across: ${sources}`);
+            
+            context = results.map((res, i) => 
+                `[Source ${i+1}: ${res.metadata.title} (${res.metadata.source_url})]\n${res.content}`
+            ).join('\n\n');
+        } else {
+            console.log(`RAG: No specific tennis context found. Falling back to general knowledge.`);
+        }
+    } catch (e) {
+        console.error(`RAG Error: Retrieval failed: ${e.message}`);
+    }
 
-    // 2. Return the primary LLM response to be displayed in the UI.
+    // 2. Build the RAG Prompt
+    const ragPrompt = `
+You are Federer AI, a specialized assistant focused on tennis knowledge. 
+Your goal is to answer questions using the provided context as your primary source of truth.
+
+--- RETRIEVED TENNIS CONTEXT ---
+${context}
+--- END OF CONTEXT ---
+
+USER QUESTION: ${userInput}
+
+INSTRUCTIONS:
+- Use the context to provide accurate, citation-backed answers.
+- If the context doesn't contain the answer, use your internal knowledge but clearly state that you are doing so.
+- Be concise, professional, and maintain a "tennis expert" tone.
+- When referencing the context, use citations like [Source 1].
+`.trim();
+
+    // 3. Generate the response from Gemini
+    console.log(`LLM: Synthesizing answer using retrieved knowledge...`);
+    const llmResponse = await generateResponse(ragPrompt);
+    console.log(`LLM: Final answer generated.`);
+
     return llmResponse;
 
   } catch (error) {
     console.error(`Agent Cycle Error: ${error.message}`);
-    // Re-throw the error so it can be caught and handled by the entry point (e.g., index.js).
     throw error;
   }
 }

@@ -4,3 +4,7 @@ sentence-transformers
 tqdm
 python-dotenv
 requests
+tf-keras
+torch
+protobuf<6.0.0
+tabulate
