@@ -1,7 +1,7 @@
 {
-  "name": "harvey",
+  "name": "r-federer",
   "version": "1.0.0",
-  "description": "An AI Agent that helps you research about financial topics using principles from Paper : \"Grounding Agent Memory in Contextual Intent (STITCH)\"",
+  "description": "A tennis-knowledge RAG system that retrieves and answers questions via RAG (Python + Ink terminal UI)",
   "main": "ui.tsx",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,16 +10,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/regional-specter/Harvey.git"
+    "url": "git+https://github.com/regional-specter/R-Federer.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/regional-specter/Harvey/issues"
+    "url": "https://github.com/regional-specter/R-Federer/issues"
   },
-  "homepage": "https://github.com/regional-specter/Harvey#readme",
+  "homepage": "https://github.com/regional-specter/R-Federer#readme",
   "dependencies": {
     "ink": "^6.6.0",
     "ink-gradient": "^3.0.0",
