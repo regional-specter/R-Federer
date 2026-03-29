@@ -1,9 +1,16 @@
-# R-Federer
+# 🎾 R-Federer
 A tennis-knowledge RAG system that retrieves and answers questions via RAG (Python + Ink terminal UI)
 
-## Intro to Retrieval-Augmented Generation (RAG)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c336b32d-b1d3-4a3d-afc6-ce6d66b0be22" width="700" alt="RAG Pipeline Diagram" />
+</p>
 
 
+### Intro to Retrieval-Augmented Generation (RAG)
+
+<p align="center">
+  <img width="750" alt="What is RAG ?" src="https://github.com/user-attachments/assets/ab198a2e-b8ea-4dc3-b99e-728342f66c8e" />
+</p>
 
 - **Retrieval-Augmented Generation (RAG)** is the process of optimizing the output of a large language model, so it references an authoritative knowledge base outside of its training data sources before generating a response.
 - Large Language Models (LLMs) are trained on vast volumes of data and use billions of parameters to generate original output for tasks like answering questions, translating languages, and completing sentences.
