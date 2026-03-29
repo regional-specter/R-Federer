@@ -27,12 +27,15 @@ A tennis-knowledge RAG system that retrieves and answers questions via RAG (Pyth
 ### Stage 1: Data Ingestion + Text Processing
 
 **1. Wiki Data Collection**
+
 The pipeline uses articles-scraper.py to target the Wikipedia API. It fetches specific tennis-related topics (e.g., "Roger Federer", "Wimbledon") and stores the raw results as JSON with fields for title, summary, and URL.
 
 **2. Text Cleaning & Normalization**
+
 text-processing.py handles the raw input by stripping citations and whitespace. It ensures the text is clean before further processing to prevent noise in the vector space.
 
 **3. Recursive Chunking**
+
 The cleaned text is split into segments of approximately 1,000 characters with a 200-character overlap. Each chunk is assigned a unique ID and saved in chunks.json for mapping back to the source.
 
 ---
@@ -40,12 +43,15 @@ The cleaned text is split into segments of approximately 1,000 characters with a
 ### Stage 2: Vector Embedding & Storage
 
 **1. Generate Semantic Embeddings**
+
 The pipeline utilizes the all-MiniLM-L6-v2 model via SentenceTransformerEmbeddingFunction. This transforms the text chunks into high-dimensional numerical vectors that capture the semantic meaning of the tennis content.
 
 **2. ChromaDB Upsert**
+
 Using chroma_client.py, the vectors are upserted into the tennis_knowledge collection. This persistent storage at backend/data/chromadb allows for lightning-fast similarity searches later.
 
 **3. Metadata Attachment**
+
 Alongside each vector, the system stores specific metadata tags: the source URL, article title, and chunk index. This ensures that every retrieved result remains context-aware and attributable.
 
 ---
@@ -53,10 +59,13 @@ Alongside each vector, the system stores specific metadata tags: the source URL,
 ### Stage 3: Query Processing & Retrieval
 
 **1. Similarity Search (DPR)**
+
 When a user asks a question like "Who is Roger Federer?", dpr_pipeline.py converts the query into an embedding and performs a vector search against the ChromaDB collection.
 
 **2. Distance-Based Ranking**
+
 The system retrieves the Top 5 most relevant chunks. It ranks them based on a "distance" score—the closer the vector is to the query in the embedding space, the higher it ranks in the results.
 
 **3. Contextual Output**
+
 The final step returns the text snippets paired with their source metadata. This allows the user (or a downstream LLM) to see the most relevant facts with a direct link back to the original Wikipedia source.
