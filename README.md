@@ -2,7 +2,7 @@
 A tennis-knowledge RAG system that retrieves and answers questions via RAG (Python + Ink terminal UI)
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/c336b32d-b1d3-4a3d-afc6-ce6d66b0be22" width="700" alt="RAG Pipeline Diagram" />
+  <img src="https://github.com/user-attachments/assets/c336b32d-b1d3-4a3d-afc6-ce6d66b0be22" width="550" alt="RAG Pipeline Diagram" />
 </p>
 
 
